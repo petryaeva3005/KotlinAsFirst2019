@@ -89,7 +89,8 @@ fun fib(n: Int): Int {
     var n2 = 1
     var n3 = n1 + n2
     for (i in 1..n) {
-        if (i < 3) n3 = 1 else {
+        if (i < 3) n3 = 1
+        else {
             n3 = n1 + n2
             n1 = n2
             n2 = n3

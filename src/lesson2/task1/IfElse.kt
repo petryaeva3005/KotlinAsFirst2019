@@ -151,11 +151,14 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val mid = a + b + c - maxOf(a, b, c) - minOf(a, b, c)
+    val max = maxOf(a, b, c)
+    val min = minOf(a, b, c)
+    val mid = a + b + c - max - min
+
     return when {
-        maxOf(a, b, c) > mid + minOf(a, b, c) -> -1
-        sqr(maxOf(a, b, c)) < sqr(mid) + sqr(minOf(a, b, c)) -> 0
-        sqr(maxOf(a, b, c)) == sqr(mid) + sqr(minOf(a, b, c)) -> 1
+        max > mid + min -> -1
+        sqr(max) < sqr(mid) + sqr(min) -> 0
+        sqr(max) == sqr(mid) + sqr(min) -> 1
         else -> 2
     }
 }
