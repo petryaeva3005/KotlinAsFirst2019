@@ -2,6 +2,7 @@
 
 package lesson5.task1
 
+
 /**
  * Пример
  *
@@ -91,7 +92,11 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
+    var result = mutableMapOf<Int, List<String>>()
+    for ((name, mark) in grades) result[mark] = result.getOrDefault(mark, listOf()) + name
+    return result.toMap()
+}
 
 /**
  * Простая
@@ -103,7 +108,14 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = TODO()
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
+    var i = 0
+    for ((key, value) in a) if (b[key] == value) {
+        i += 1
+        break
+    }
+    return i > 0
+}
 
 /**
  * Простая
@@ -119,7 +131,9 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = TODO()
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = TODO()
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
+    for ((key, value) in b) if (a[key] == value) a -= key
+}
 
 /**
  * Простая
@@ -128,7 +142,11 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit = TO
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    val res = mutableSetOf<String>()
+    for (element in a) if (element in b) res.add(element)
+    return res.toList()
+}
 
 /**
  * Средняя
@@ -148,7 +166,6 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = TODO()
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> = TODO()
-
 /**
  * Средняя
  *
