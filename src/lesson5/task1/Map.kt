@@ -227,7 +227,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     var i = 0
-    for (element in word) if (element in chars) continue else i += 1
+    for (element in word)
+        if (element in chars) continue
+        else i += 1
     return i == 0
 }
 

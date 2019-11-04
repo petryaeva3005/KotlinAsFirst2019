@@ -167,9 +167,7 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var result = 0
-    for (i in p.indices) {
-        result += p[i] * x.toDouble().pow(i).toInt()
-    }
+    for (i in p.indices) result += p[i] * x.toDouble().pow(i).toInt()
     return result
 }
 
