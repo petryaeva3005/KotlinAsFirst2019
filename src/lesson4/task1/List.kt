@@ -7,6 +7,7 @@ import lesson3.task1.isPrime
 import kotlin.math.sqrt
 import kotlin.math.pow
 import kotlin.math.*
+import kotlin.text.StringBuilder
 
 
 /**
@@ -119,7 +120,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = sqrt(v.map { it * it }.sum())
+fun abs(v: List<Double>): Double = sqrt(v.sumByDouble { it * it })
 
 
 /**
@@ -137,13 +138,10 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> {
-    return if (list.isEmpty()) list
-    else {
-        val mid = mean(list)
-        for (i in 0 until list.size) list[i] -= mid
-        list
-    }
+fun center(list: MutableList<Double>): MutableList<Double> = if (list.isEmpty()) list else {
+    val mid = mean(list)
+    for (i in 0 until list.size) list[i] -= mid
+    list
 }
 
 /**
@@ -186,16 +184,13 @@ fun polynom(p: List<Int>, x: Int): Int {
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    return if (list.isEmpty()) list
-    else {
-        var sum = list.first()
-        for (i in 1 until list.size) {
-            sum += list[i]
-            list[i] = sum
-        }
-        list
+fun accumulate(list: MutableList<Int>): MutableList<Int> = if (list.isEmpty()) list else {
+    var sum = list.first()
+    for (i in 1 until list.size) {
+        sum += list[i]
+        list[i] = sum
     }
+    list
 }
 
 /**
@@ -207,16 +202,15 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  */
 fun factorize(n: Int): List<Int> {
     var varN = n
-    var list = listOf<Int>()
-    if (isPrime(n)) list = list + n
-    else {
-        while (varN > 1) {
-            for (i in 2..varN) {
-                if (isPrime(i) && varN % i == 0) {
-                    list = list + i
-                    varN /= i
-                    break
-                } else continue
+    var past = 2
+    val list = mutableListOf<Int>()
+    while (varN > 1) {
+        for (i in past..varN) {
+            if (varN % i == 0) {
+                list += i
+                varN /= i
+                past = i
+                break
             }
         }
     }
@@ -241,16 +235,12 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  */
 fun convert(n: Int, base: Int): List<Int> {
     var varN = n
-    var list = listOf<Int>()
+    val list = mutableListOf<Int>()
     while (varN > 0) {
-        list = list + varN % base
+        list += varN % base
         varN /= base
     }
-    var result = listOf<Int>()
-    for (i in list.indices) {
-        result += list[list.size - i - 1]
-    }
-    return result
+    return list.reversed()
 }
 
 /**
@@ -266,10 +256,10 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val abc = "0123456789abcdefghijklmnopqrstuvwxyz"
-    var result = ""
+    val result = StringBuilder()
     val list = convert(n, base)
-    for (i in list.indices) result += abc[list[i]]
-    return result
+    for (element in list) result.append(abc[element])
+    return result.toString()
 }
 
 /**
@@ -300,11 +290,10 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val abc = "0123456789abcdefghijklmnopqrstuvwxyz"
-    var list = listOf<Int>()
-    for (i in str.indices) {
-        list += abc.indexOf(str[i], 0)
-    }
+    val list = mutableListOf<Int>()
+    for (element in str)
+        list += if (element <= '9') (element - '0').toInt()
+        else element - 'a' + 10
     return decimal(list, base)
 }
 
@@ -321,27 +310,27 @@ fun roman(n: Int): String {
     val list = listOf<String>("I", "V", "X", "L", "C", "D", "M")
     var d = 100
     var j = 6
-    var result = ""
-    for (i in 1..varN / 1000) result += "M"
+    val result = StringBuilder()
+    for (i in 1..varN / 1000) result.append("M")
     varN %= 1000
     while (varN > 0) {
         when (varN / d) {
-            0 -> result += ""
-            1 -> result += list[j - 2]
-            2 -> result = result + list[j - 2] + list[j - 2]
-            3 -> result = result + list[j - 2] + list[j - 2] + list[j - 2]
-            4 -> result = result + list[j - 2] + list[j - 1]
-            5 -> result += list[j - 1]
-            6 -> result = result + list[j - 1] + list[j - 2]
-            7 -> result = result + list[j - 1] + list[j - 2] + list[j - 2]
-            8 -> result = result + list[j - 1] + list[j - 2] + list[j - 2] + list[j - 2]
-            else -> result = result + list[j - 2] + list[j]
+            1 -> result.append(list[j - 2])
+            2 -> result.append(list[j - 2] + list[j - 2])
+            3 -> result.append(list[j - 2] + list[j - 2] + list[j - 2])
+            4 -> result.append(list[j - 2] + list[j - 1])
+            5 -> result.append(list[j - 1])
+            6 -> result.append(list[j - 1] + list[j - 2])
+            7 -> result.append(list[j - 1] + list[j - 2] + list[j - 2])
+            8 -> result.append(list[j - 1] + list[j - 2] + list[j - 2] + list[j - 2])
+            9 -> result.append(list[j - 2] + list[j])
+            else -> result.append("")
         }
         j -= 2
         varN %= d
         d /= 10
     }
-    return result
+    return result.toString()
 }
 
 /**
@@ -354,7 +343,7 @@ fun roman(n: Int): String {
 fun russian(n: Int): String {
     var varM = n
     var varN = varM / 100000
-    var result = ""
+    val result = StringBuilder()
     fun hundred(n: Int): String = when (n) {
         1 -> "сто "
         2 -> "двести "
@@ -367,6 +356,7 @@ fun russian(n: Int): String {
         9 -> "девятьсот "
         else -> ""
     }
+
     fun decade(n: Int): String = when (n / 10) {
         1 -> when (n) {
             10 -> "десять "
@@ -390,50 +380,54 @@ fun russian(n: Int): String {
         9 -> "девяносто "
         else -> ""
     }
+
+    fun one(n: Int): String = when (n) {
+        1 -> "од"
+        2 -> "дв"
+        3 -> "три "
+        4 -> "четыре "
+        5 -> "пять "
+        6 -> "шесть "
+        7 -> "семь "
+        8 -> "восемь "
+        9 -> "девять "
+        else -> ""
+    }
     if (n == 0) return "ноль"
     else if (n / 1000 > 0) {
-        result += hundred(varN)
+        result.append(hundred(varN))
         varM = n % 100000
         varN = varM / 1000
-        result += decade(varN)
+        result.append(decade(varN))
         if (varN / 10 != 1) {
             varM = n % 10000
             varN = varM / 1000
-            result += when (varN) {
-                1 -> "одна тысяча "
-                2 -> "две тысячи "
-                3 -> "три тысячи "
-                4 -> "четыре тысячи "
-                5 -> "пять тысяч "
-                6 -> "шесть тысяч "
-                7 -> "семь тысяч "
-                8 -> "восемь тысяч "
-                9 -> "девять тысяч "
-                else -> "тысяч "
-            }
-        }
-        else result += "тысяч "
+            result.append(
+                one(varN) + when (varN) {
+                    1 -> "на тысяча "
+                    2 -> "е тысячи "
+                    3 -> "тысячи "
+                    4 -> "тысячи "
+                    else -> "тысяч "
+                }
+            )
+        } else result.append("тысяч ")
     }
     varM = n % 1000
     varN = varM / 100
-    result += hundred(varN)
+    result.append(hundred(varN))
     varN = n % 100
-    result += decade(varN)
+    result.append(decade(varN))
     if (varN / 10 != 1) {
         varM = n % 10
         varN = varM
-        result += when (varN) {
-            1 -> "один"
-            2 -> "два"
-            3 -> "три"
-            4 -> "четыре"
-            5 -> "пять"
-            6 -> "шесть"
-            7 -> "семь"
-            8 -> "восемь"
-            9 -> "девять"
-            else -> ""
-        }
+        result.append(
+            one(varN) + when (varN) {
+                1 -> "ин"
+                2 -> "а"
+                else -> ""
+            }
+        )
     }
-    return result.trim()
+    return result.toString().trim()
 }
