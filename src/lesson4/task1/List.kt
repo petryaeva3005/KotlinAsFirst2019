@@ -290,7 +290,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     val list = mutableListOf<Int>()
     for (element in str)
-        list += if (element <= '9') (element - '0').toInt()
+        list += if (element <= '9') (element - '0')
         else element - 'a' + 10
     return decimal(list, base)
 }
@@ -380,8 +380,14 @@ fun russian(n: Int): String {
     }
 
     fun one(n: Int): String = when (n) {
-        1 -> "од"
-        2 -> "дв"
+        1 -> {
+            if (varM == n % 10) "один "
+            else "одна "
+        }
+        2 -> {
+            if (varM == n % 10) "два "
+            else "две "
+        }
         3 -> "три "
         4 -> "четыре "
         5 -> "пять "
@@ -402,8 +408,8 @@ fun russian(n: Int): String {
             varN = varM / 1000
             result.append(
                 one(varN) + when (varN) {
-                    1 -> "на тысяча "
-                    2 -> "е тысячи "
+                    1 -> "тысяча "
+                    2 -> "тысячи "
                     3 -> "тысячи "
                     4 -> "тысячи "
                     else -> "тысяч "
@@ -419,13 +425,7 @@ fun russian(n: Int): String {
     if (varN / 10 != 1) {
         varM = n % 10
         varN = varM
-        result.append(
-            one(varN) + when (varN) {
-                1 -> "ин"
-                2 -> "а"
-                else -> ""
-            }
-        )
+        result.append(one(varN))
     }
     return result.toString().trim()
 }
