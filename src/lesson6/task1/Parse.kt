@@ -74,70 +74,29 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val list = str.split(" ")
-    val res: String
-    try {
-        if (list.size != 3) throw NumberFormatException("")
-        val d = list.first().toInt()
-        val y = list.last().toInt()
-        val m: Int
-        val lim: Int
-        when (list[1]) {
-            "января" -> {
-                m = 1
-                lim = 31
-            }
-            "февраля" -> {
-                m = 2
-                lim = daysInMonth(m, y)
-            }
-            "марта" -> {
-                m = 3
-                lim = 31
-            }
-            "апреля" -> {
-                m = 4
-                lim = 30
-            }
-            "мая" -> {
-                m = 5
-                lim = 31
-            }
-            "июня" -> {
-                m = 6
-                lim = 30
-            }
-            "июля" -> {
-                m = 7
-                lim = 31
-            }
-            "августа" -> {
-                m = 8
-                lim = 31
-            }
-            "сентября" -> {
-                m = 9
-                lim = 30
-            }
-            "октября" -> {
-                m = 10
-                lim = 31
-            }
-            "ноября" -> {
-                m = 11
-                lim = 30
-            }
-            "декабря" -> {
-                m = 12
-                lim = 31
-            }
-            else -> throw NumberFormatException("")
-        }
-        if (d > lim) throw NumberFormatException("")
-        else res = String.format("%02d.%02d.%04d", d, m, y)
-    } catch (e: NumberFormatException) {
-        return ""
-    }
-    return res
+    val lim: Int
+    val month = mapOf(
+        "января" to 1,
+        "февраля" to 2,
+        "марта" to 3,
+        "апреля" to 4,
+        "мая" to 5,
+        "июня" to 6,
+        "июля" to 7,
+        "августа" to 8,
+        "сентября" to 9,
+        "октября" to 10,
+        "ноября" to 11,
+        "декабря" to 12
+    )
+    if (list.size != 3) return ""
+    val d = list.first().toIntOrNull()
+    val y = list.last().toIntOrNull()
+    val m = month.getOrDefault(list[1], 0)
+    if ((m == 0) || (y == null)) return ""
+    else lim = daysInMonth(m, y)
+    return if ((d == null) || (d > lim) || (d <= 0)) ""
+    else String.format("%02d.%02d.%d", d, m, y)
 }
 
 /**
@@ -152,73 +111,35 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val list = digital.split(".")
-    val res: String
-    try {
-        if (list.size != 3) throw NumberFormatException("")
-        val d = list.first().toInt()
-        val y = list.last().toInt()
-        val mm = list[1].toInt()
-        val m = StringBuilder()
-        val lim: Int
-        when (mm) {
-            1 -> {
-                m.append("января")
-                lim = 31
-            }
-            2 -> {
-                m.append("февраля")
-                lim = daysInMonth(mm, y)
-            }
-            3 -> {
-                m.append("марта")
-                lim = 31
-            }
-            4 -> {
-                m.append("апреля")
-                lim = 30
-            }
-            5 -> {
-                m.append("мая")
-                lim = 31
-            }
-            6 -> {
-                m.append("июня")
-                lim = 30
-            }
-            7 -> {
-                m.append("июля")
-                lim = 31
-            }
-            8 -> {
-                m.append("августа")
-                lim = 31
-            }
-            9 -> {
-                m.append("сентября")
-                lim = 30
-            }
-            10 -> {
-                m.append("октября")
-                lim = 31
-            }
-            11 -> {
-                m.append("ноября")
-                lim = 30
-            }
-            12 -> {
-                m.append("декабря")
-                lim = 31
-            }
-            else -> throw NumberFormatException("")
-        }
-        if (d > lim) throw NumberFormatException("")
-        else res = String.format("%s %s %s", d, m, y)
-    } catch (e: NumberFormatException) {
-        return ""
+    var lim: Int
+    val month = mapOf(
+        1 to "января",
+        2 to "февраля",
+        3 to "марта",
+        4 to "апреля",
+        5 to "мая",
+        6 to "июня",
+        7 to "июля",
+        8 to "августа",
+        9 to "сентября",
+        10 to "октября",
+        11 to "ноября",
+        12 to "декабря"
+    )
+    if (list.size != 3) return ""
+    val d = list.first().toIntOrNull()
+    val y = list.last().toIntOrNull()
+    val mm = list[1].toIntOrNull()
+    if (mm == null) return ""
+    else {
+        val m = month.getOrDefault(list[1].toInt(), "")
+        if ((m == "") || (y == null)) return ""
+        else lim = daysInMonth(mm, y)
+        return if ((d == null) || (d > lim) || (d <= 0)) ""
+        else String.format("%s %s %s", d, m, y)
     }
-    return res
-
 }
+
 
 /**
  * Средняя
@@ -260,17 +181,15 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    var res: Int
-    try {
-        val list = jumps.split(" ")
-        for (element in list)
-            if ((element == "%") || (element == "-") || (element.toIntOrNull() is Int)) continue
-            else throw NumberFormatException("-1")
-
-        res = list.max()?.toInt()!!
-    } catch (e: NumberFormatException) {
-        return -1
+    var res = 0
+    val list = jumps.split(" ")
+    for (element in list) {
+        if (element.toIntOrNull() is Int) {
+            if (element.toInt() >= res) res = element.toInt()
+        } else if ((element == "%") || (element == "-")) continue
+        else return -1
     }
+    if (res == 0) return -1
     return res
 }
 
@@ -287,21 +206,18 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     val list = jumps.split(" ")
-
     var res = 0
-    var past = 0
-    return try {
-        for (i in list.indices) {
-            if (i % 2 != 0) {
-                if ((list[i] == "+") && (past > res)) res = past
-                if (list[i].matches(Regex("""\%*(\+|-)*"""))) continue
-                else throw NumberFormatException()
-            } else past = list[i].toInt()
-        }
-        res
-    } catch (e: NumberFormatException) {
-        -1
+    var max = 0
+    if (list.size % 2 != 0) return -1
+    for (i in 1 until list.size step 2) {
+        val j = list[i - 1].toIntOrNull()
+        if (j != null) max = j
+        else return -1
+        if ((list[i] == "+") && (max > res)) res = max
+        if (list[i].matches(Regex("""\%*(\+|-)*"""))) continue
+        else return -1
     }
+    return res
 }
 
 /**
@@ -315,20 +231,18 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val list = expression.split(" ")
-    var res = 0
-    var past = 1
-    for (i in list.indices) {
-        if (i % 2 == 0) {
-            if (list[i].matches(Regex("""\d+"""))) res += past * list[i].toInt()
-            else throw IllegalArgumentException()
-
-        } else when (list[i]) {
-            "+" -> past = 1
-            "-" -> past = -1
+    var res =0
+    if (list.first().matches(Regex("""\d+"""))) res = list.first().toInt()
+    else throw IllegalArgumentException()
+    for (i in 2 until list.size step 2) {
+        val past = when (list[i-1]) {
+            "+" -> 1
+            "-" -> -1
             else -> throw IllegalArgumentException()
         }
+            if (list[i].matches(Regex("""\d+"""))) res += past * list[i].toInt()
+            else throw IllegalArgumentException()
     }
-
     return res
 }
 
@@ -342,17 +256,17 @@ fun plusMinus(expression: String): Int {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val list = str.split(" ").toMutableList()
+    val list = str.split(" ")
     var past = ""
     var j = 0
     var res = -1
     for (i in list.indices) {
-        list[i] = list[i].toUpperCase()
-        if (list[i] == past) {
+        val repeat = list[i].toUpperCase()
+        if (repeat == past) {
             j++
-            break
+            return res
         } else res += 1 + past.length
-        past = list[i]
+        past = repeat
 
     }
     if (j == 0) res = -1

@@ -200,19 +200,15 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = if (list.isEmpty()) l
  */
 fun factorize(n: Int): List<Int> {
     var varN = n
-    var past = 2
     val list = mutableListOf<Int>()
-    while (varN > 1) {
-        for (i in past..varN) {
-            if (varN % i == 0) {
-                list += i
-                varN /= i
-                past = i
-                break
-            }
+    for (i in 2..ceil(sqrt(varN.toDouble())).toInt()) {
+        if (varN % i == 0) {
+            list += i
+            varN /= i
         }
     }
-    return list
+    return if (varN != 1) (list + varN).sorted()
+    else list
 }
 
 /**
