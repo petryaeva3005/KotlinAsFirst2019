@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.sorted
+
 
 /**
  * Пример
@@ -284,10 +286,10 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val res = mutableMapOf<String, Set<String>>()
+    val res = friends.toMutableMap()
     for ((key, value) in friends) {
         for (element in value) {
-            res[key] = friends.getOrDefault(element, setOf()) + value - key
+            res[key] = friends.getOrDefault(element, setOf()).filter { it != key }.toSet()
             res[element] = res.getOrDefault(element, setOf())
         }
     }
@@ -314,8 +316,9 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val l = mutableListOf<Int>()
     for (element in list) l += list.indexOf(number-element)
-    for (element in l) {
-        if ((element != l.indexOf(element)) && (element != -1)) return Pair(l.indexOf(element), element)
+    for (i in 0 until l.size) {
+        val j = l[i]
+        if ((j != i ) && (j != -1)) return Pair(i, j).sorted()
     }
     return Pair(-1,-1)
 }
