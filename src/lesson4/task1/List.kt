@@ -202,12 +202,13 @@ fun factorize(n: Int): List<Int> {
     var varN = n
     val list = mutableListOf<Int>()
     for (i in 2..ceil(sqrt(varN.toDouble())).toInt()) {
-        if (varN % i == 0) {
+        while (varN % i == 0) {
             list += i
             varN /= i
         }
+        if (varN == 1) break
     }
-    return if (varN != 1) (list + varN).sorted()
+    return if (varN != 1) (list + varN)
     else list
 }
 

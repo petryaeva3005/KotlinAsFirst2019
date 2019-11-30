@@ -112,9 +112,9 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     for ((key, value) in a)
-        if (b[key] == value)
-        return true
-    return false
+        if (b[key] != value)
+            return false
+    return true
 }
 
 /**
@@ -226,9 +226,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    var set = setOf<Char>()
+    for (char in chars) set += char.toLowerCase()
     for (element in word.toLowerCase())
-        if (element in chars) continue
-        else return false
+        if (element !in set) return false
     return true
 }
 
@@ -314,13 +315,11 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val l = mutableListOf<Int>()
-    for (element in list) l += list.indexOf(number-element)
-    for (i in 0 until l.size) {
-        val j = l[i]
-        if ((j != i ) && (j != -1)) return Pair(i, j).sorted()
+    for (i  in list.indices) {
+        val j = list.indexOf(number - list[i])
+        if ((j != i) && (j != -1)) return Pair(i, j).sorted()
     }
-    return Pair(-1,-1)
+    return Pair(-1, -1)
 }
 
 /**

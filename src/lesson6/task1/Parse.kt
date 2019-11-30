@@ -94,7 +94,7 @@ fun dateStrToDigit(str: String): String {
     val y = list.last().toIntOrNull()
     val m = month.getOrDefault(list[1], 0)
     if ((m == 0) || (y == null)) return ""
-    else lim = daysInMonth(m, y)
+    lim = daysInMonth(m, y)
     return if ((d == null) || (d > lim) || (d <= 0)) ""
     else String.format("%02d.%02d.%d", d, m, y)
 }
@@ -111,33 +111,31 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val list = digital.split(".")
-    var lim: Int
-    val month = mapOf(
-        1 to "января",
-        2 to "февраля",
-        3 to "марта",
-        4 to "апреля",
-        5 to "мая",
-        6 to "июня",
-        7 to "июля",
-        8 to "августа",
-        9 to "сентября",
-        10 to "октября",
-        11 to "ноября",
-        12 to "декабря"
+    val lim: Int
+    val month = listOf(
+        "января",
+        "февраля",
+        "марта",
+        "апреля",
+        "мая",
+        "июня",
+        "июля",
+        "августа",
+        "сентября",
+        "октября",
+        "ноября",
+        "декабря"
     )
     if (list.size != 3) return ""
     val d = list.first().toIntOrNull()
     val y = list.last().toIntOrNull()
     val mm = list[1].toIntOrNull()
-    if (mm == null) return ""
-    else {
-        val m = month.getOrDefault(list[1].toInt(), "")
-        if ((m == "") || (y == null)) return ""
-        else lim = daysInMonth(mm, y)
-        return if ((d == null) || (d > lim) || (d <= 0)) ""
-        else String.format("%s %s %s", d, m, y)
-    }
+    if ((mm == null) || (mm == 0)) return ""
+    val m = month[mm - 1]
+    if ((m == "") || (y == null)) return ""
+    else lim = daysInMonth(mm, y)
+    return if ((d == null) || (d > lim) || (d <= 0)) ""
+    else String.format("%s %s %s", d, m, y)
 }
 
 
@@ -181,15 +179,15 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    var res = 0
+    var res = -1
     val list = jumps.split(" ")
     for (element in list) {
-        if (element.toIntOrNull() is Int) {
-            if (element.toInt() >= res) res = element.toInt()
+        val e = element.toIntOrNull()
+        if (e != null) {
+            if (e >= res) res = e
         } else if ((element == "%") || (element == "-")) continue
         else return -1
     }
-    if (res == 0) return -1
     return res
 }
 
@@ -207,15 +205,13 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val list = jumps.split(" ")
     var res = 0
-    var max = 0
     if (list.size % 2 != 0) return -1
     for (i in 1 until list.size step 2) {
-        val j = list[i - 1].toIntOrNull()
-        if (j != null) max = j
-        else return -1
-        if ((list[i] == "+") && (max > res)) res = max
-        if (list[i].matches(Regex("""\%*(\+|-)*"""))) continue
-        else return -1
+        val j = list[i - 1].toIntOrNull() ?: return -1
+        if (list[i].matches(Regex("""\%*\+""")) && (j > res)) res = j
+        else
+            if (list[i].matches(Regex("""\%*\-*"""))) continue
+            else return -1
     }
     return res
 }
@@ -231,17 +227,17 @@ fun bestHighJump(jumps: String): Int {
  */
 fun plusMinus(expression: String): Int {
     val list = expression.split(" ")
-    var res =0
-    if (list.first().matches(Regex("""\d+"""))) res = list.first().toInt()
+    var res = 0
+    if ((list.size % 2 == 1) && (list.first().matches(Regex("""\d+""")))) res = list.first().toInt()
     else throw IllegalArgumentException()
     for (i in 2 until list.size step 2) {
-        val past = when (list[i-1]) {
+        val past = when (list[i - 1]) {
             "+" -> 1
             "-" -> -1
             else -> throw IllegalArgumentException()
         }
-            if (list[i].matches(Regex("""\d+"""))) res += past * list[i].toInt()
-            else throw IllegalArgumentException()
+        if (list[i].matches(Regex("""\d+"""))) res += past * list[i].toInt()
+        else throw IllegalArgumentException()
     }
     return res
 }
@@ -258,19 +254,15 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val list = str.split(" ")
     var past = ""
-    var j = 0
     var res = -1
     for (i in list.indices) {
         val repeat = list[i].toUpperCase()
         if (repeat == past) {
-            j++
             return res
         } else res += 1 + past.length
         past = repeat
-
     }
-    if (j == 0) res = -1
-    return res
+    return res - 1
 }
 
 /**
