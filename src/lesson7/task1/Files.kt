@@ -71,26 +71,24 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        for (i in line.indices) {
-            if (i == 0) writer.write(line[i].toString())
-            else
-                if (line[i - 1].toString().matches(Regex("""[ЖжЧчШшЩщ]""")))
-                    when {
-                        line[i] == 'ы' -> writer.write("и")
-                        line[i] == 'Ы' -> writer.write("И")
-                        line[i] == 'я' -> writer.write("а")
-                        line[i] == 'Я' -> writer.write("А")
-                        line[i] == 'ю' -> writer.write("у")
-                        line[i] == 'Ю' -> writer.write("У")
-                        else -> writer.write(line[i].toString())
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            for (i in line.indices) {
+                if ((i != 0) && (line[i - 1] in setOf('Ж', 'ж', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ')))
+                    when (line[i]) {
+                        'ы' -> it.write("и")
+                        'Ы' -> it.write("И")
+                        'я' -> it.write("а")
+                        'Я' -> it.write("А")
+                        'ю' -> it.write("у")
+                        'Ю' -> it.write("У")
+                        else -> it.write(line[i].toString())
                     }
-                else writer.write(line[i].toString())
+                else it.write(line[i].toString())
+            }
+            it.newLine()
         }
-        writer.newLine()
     }
-    writer.close()
 }
 
 /**
@@ -147,26 +145,27 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         var x = 0
         var y = 0
         var s = 0
-        val list = mutableListOf<String>()
+        val list1 = mutableListOf<String>()
         for (line in File(inputName).readLines()) {
             val str = Regex("""\s+""").replace(line, " ").trim()
-            list += str
+            list1 += str
             val length = str.length
             if (length > max) max = length
         }
-        for (element in list) {
-            val k = element.split(" ").size - 1
+        for (element in list1) {
+            val list2 = element.split(" ")
+            val k = list2.size - 1
             if (k > 0) {
                 x = (max - element.length) / k
                 y = (max - element.length) % k
             }
-            for (char in element) {
-                if (char == ' ') {
-                    s++
-                    for (j in 1..x + 1) it.write(" ")
+            for (i in list2.indices) {
+                it.write(list2[i])
+                s++
+                if (i != list2.size - 1) {
+                    for (j in 0..x) it.write(" ")
                     if (s <= y) it.write(" ")
-                } else
-                    it.write(char.toString())
+                }
             }
             s = 0
             it.newLine()
@@ -306,7 +305,9 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun markdownToHtmlSimple(inputName: String, outputName: String) = TODO()
+fun markdownToHtmlSimple(inputName: String, outputName: String) {
+    TODO()
+}
 
 /**
  * Сложная

@@ -127,14 +127,13 @@ fun dateDigitToStr(digital: String): String {
         "декабря"
     )
     if (list.size != 3) return ""
-    val d = list.first().toIntOrNull()
-    val y = list.last().toIntOrNull()
-    val mm = list[1].toIntOrNull()
-    if ((mm == null) || (mm == 0)) return ""
+    val d = list.first().toIntOrNull() ?: return ""
+    val y = list.last().toIntOrNull() ?: return ""
+    val mm = list[1].toIntOrNull() ?: return ""
+    if ((mm == 0) || (mm > 12)) return ""
     val m = month[mm - 1]
-    if ((m == "") || (y == null)) return ""
-    else lim = daysInMonth(mm, y)
-    return if ((d == null) || (d > lim) || (d <= 0)) ""
+    lim = daysInMonth(mm, y)
+    return if ((d > lim) || (d <= 0)) ""
     else String.format("%s %s %s", d, m, y)
 }
 
@@ -262,7 +261,7 @@ fun firstDuplicateIndex(str: String): Int {
         } else res += 1 + past.length
         past = repeat
     }
-    return res - 1
+    return -1
 }
 
 /**
