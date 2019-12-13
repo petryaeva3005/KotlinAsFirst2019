@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson3.task1.isPrime
+import lesson3.task1.minDivisor
 import kotlin.math.sqrt
 import kotlin.math.pow
 import kotlin.math.*
@@ -200,16 +201,13 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = if (list.isEmpty()) l
  */
 fun factorize(n: Int): List<Int> {
     var varN = n
-    val list = mutableListOf<Int>()
-    for (i in 2..ceil(sqrt(varN.toDouble())).toInt()) {
-        while (varN % i == 0) {
-            list += i
-            varN /= i
-        }
-        if (varN == 1) break
+    val res = mutableListOf<Int>()
+    while (varN != 1) {
+        val minDivisor = minDivisor(varN)
+        res += minDivisor
+        varN /= minDivisor
     }
-    return if (varN != 1) (list + varN)
-    else list
+    return res
 }
 
 /**
@@ -379,12 +377,12 @@ fun russian(n: Int): String {
 
     fun one(n: Int): String = when (n) {
         1 -> {
-            if (varM == n % 10) "один "
-            else "одна "
+            if (varM != n % 10) "одна "
+            else "один "
         }
         2 -> {
-            if (varM == n % 10) "два "
-            else "две "
+            if (varM != n % 10) "две "
+            else "два "
         }
         3 -> "три "
         4 -> "четыре "

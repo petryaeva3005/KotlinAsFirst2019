@@ -3,7 +3,8 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import java.lang.IllegalArgumentException
+import kotlin.IllegalArgumentException
+
 
 /**
  * Пример
@@ -130,7 +131,7 @@ fun dateDigitToStr(digital: String): String {
     val d = list.first().toIntOrNull() ?: return ""
     val y = list.last().toIntOrNull() ?: return ""
     val mm = list[1].toIntOrNull() ?: return ""
-    if ((mm == 0) || (mm > 12)) return ""
+    if ((mm <= 0) || (mm > 12)) return ""
     val m = month[mm - 1]
     lim = daysInMonth(mm, y)
     return if ((d > lim) || (d <= 0)) ""
@@ -326,4 +327,41 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val res = mutableListOf<Int>()
+    for (i in 0 until cells) res += 0
+    var iRes = cells / 2
+    var iCommands = 0
+    var j = 0
+    val map = mutableMapOf<Int, Int>()
+    val stack = mutableListOf<Int>()
+    //нахождение индексов начала и конца цикла
+    for (i in commands.indices) {
+        when (commands[i]) {
+            '[' -> stack += i
+            ']' -> {
+                map += Pair(i, stack.lastOrNull() ?: throw IllegalArgumentException())
+                map += Pair(stack.last(), i)
+                stack.remove(stack.last())
+            }
+        }
+    }
+    if (stack.isNotEmpty()) throw IllegalArgumentException()
+    while (j < limit) {
+        if (iRes >= cells) throw IllegalStateException()
+        when (commands[iCommands]) {
+            '>' -> iRes += 1
+            '<' -> iRes -= 1
+            '+' -> res[iRes] += 1
+            '-' -> res[iRes] -= 1
+            ' ' -> iRes += 0
+            '[' -> if (res[iRes] == 0) iCommands = map[iCommands] ?: throw IllegalArgumentException()
+            ']' -> if (res[iRes] != 0) iCommands = map[iCommands] ?: throw IllegalArgumentException()
+            else -> throw IllegalArgumentException()
+        }
+        iCommands++
+        if (iCommands == commands.length) break
+        j++
+    }
+    return res
+}

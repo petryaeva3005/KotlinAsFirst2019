@@ -2,7 +2,6 @@
 
 package lesson5.task1
 
-import ru.spbstu.wheels.sorted
 
 
 /**
@@ -290,8 +289,9 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val res = friends.toMutableMap()
     for ((key, value) in friends) {
         for (element in value) {
-            res[key] = friends.getOrDefault(element, setOf()).filter { it != key }.toSet() + value
-            res[element] = res.getOrDefault(element, setOf())
+            res[key] = res.getOrPut(key, { setOf() }) +
+                    res.getOrPut(element, { setOf() }).filter { it != key }.toSet() + element
+            res[element] = res.getOrPut(element, { setOf() })
         }
     }
     return res
@@ -315,9 +315,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i  in list.indices) {
-        val j = list.indexOf(number - list[i])
-        if ((j != i) && (j != -1)) return Pair(i, j).sorted()
+    val map = mutableMapOf<Int, Int>()
+    for ((index, value) in list.withIndex()) {
+        if (number - value in map.keys) return Pair(map[number - value]!!, index)
+        else map[value] = index
     }
     return Pair(-1, -1)
 }

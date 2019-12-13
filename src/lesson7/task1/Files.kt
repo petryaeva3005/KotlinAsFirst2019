@@ -4,6 +4,7 @@ package lesson7.task1
 
 import lesson1.task1.lengthInMeters
 import java.io.File
+import kotlin.math.pow
 
 /**
  * Пример
@@ -73,18 +74,18 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
 fun sibilants(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            for (i in line.indices) {
-                if ((i != 0) && (line[i - 1] in setOf('Ж', 'ж', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ')))
-                    when (line[i]) {
+            for ((index, value) in line.withIndex()) {
+                if ((index != 0) && (line[index - 1] in setOf('Ж', 'ж', 'Ч', 'ч', 'Ш', 'ш', 'Щ', 'щ')))
+                    when (value) {
                         'ы' -> it.write("и")
                         'Ы' -> it.write("И")
                         'я' -> it.write("а")
                         'Я' -> it.write("А")
                         'ю' -> it.write("у")
                         'Ю' -> it.write("У")
-                        else -> it.write(line[i].toString())
+                        else -> it.write(value.toString())
                     }
-                else it.write(line[i].toString())
+                else it.write(value.toString())
             }
             it.newLine()
         }
@@ -477,4 +478,3 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
-
