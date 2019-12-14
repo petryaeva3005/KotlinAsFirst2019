@@ -155,11 +155,10 @@ class Line private constructor(val b: Double, var angle: Double) {
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
     fun crossPoint(other: Line): Point {
-        val result = Point(0.0, 0.0)
-        result.x = (b * cos(other.angle) - other.b * cos(angle)) /
+        val x = (b * cos(other.angle) - other.b * cos(angle)) /
                 (sin(other.angle) * cos(angle) - sin(angle) * cos(other.angle))
-        result.y = (result.x * sin(other.angle) + other.b) / cos(other.angle)
-        return result
+        val y = (x * sin(other.angle) + other.b) / cos(other.angle)
+        return Point(x, y)
     }
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b

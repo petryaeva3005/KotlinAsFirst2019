@@ -360,6 +360,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             ']' -> if (res[iRes] != 0) iCommands = map[iCommands] ?: throw IllegalArgumentException()
             else -> throw IllegalArgumentException()
         }
+        if ((iRes < 0) || (iRes >= cells)) throw IllegalStateException()
         iCommands++
         if (iCommands == commands.length) break
         j++
