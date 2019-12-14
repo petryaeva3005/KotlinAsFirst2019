@@ -289,9 +289,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     val res = friends.toMutableMap()
     for ((key, value) in friends) {
         for (element in value) {
-            res[key] = res.getOrPut(key, { setOf() }) +
-                    res.getOrPut(element, { setOf() }).filter { it != key }.toSet() + element
-            res[element] = res.getOrPut(element, { setOf() })
+            res[key] = friends.getOrDefault(element, setOf()).filter { it != key }.toSet() + value
+            res[element] = res.getOrDefault(element, setOf())
         }
     }
     return res

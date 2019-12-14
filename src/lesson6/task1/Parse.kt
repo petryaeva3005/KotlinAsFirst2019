@@ -347,6 +347,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
     }
     if (stack.isNotEmpty()) throw IllegalArgumentException()
+    if (commands.isEmpty()) return res
     while (j < limit) {
         if (iRes >= cells) throw IllegalStateException()
         when (commands[iCommands]) {
