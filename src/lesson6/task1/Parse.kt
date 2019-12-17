@@ -328,7 +328,7 @@ fun fromRoman(roman: String): Int = TODO()
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-    val res = MutableList(cells) { index_ -> 0}
+    val res = MutableList(cells) { 0 }
     var iRes = cells / 2
     var iCommands = 0
     var j = 0
@@ -341,13 +341,13 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             ']' -> {
                 map += Pair(i, stack.lastOrNull() ?: throw IllegalArgumentException())
                 map += Pair(stack.last(), i)
-                stack.removeAt(stack.size-1)
+                stack.removeAt(stack.size - 1)
             }
         }
     }
     if (stack.isNotEmpty()) throw IllegalArgumentException()
     if (commands.isEmpty()) return res
-    while ((j < limit) && (iCommands != commands.length)){
+    while ((j < limit) && (iCommands != commands.length)) {
         when (commands[iCommands]) {
             '>' -> iRes += 1
             '<' -> iRes -= 1

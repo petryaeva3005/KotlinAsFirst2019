@@ -132,7 +132,7 @@ fun circleByDiameter(diameter: Segment): Circle {
     val radius = diameter.begin.distance(diameter.end) / 2
     val centerX = (diameter.end.x + diameter.begin.x) / 2
     val centerY = (diameter.end.y + diameter.begin.y) / 2
-    return  Circle(Point(centerX, centerY), radius)
+    return Circle(Point(centerX, centerY), radius)
 }
 
 /**
@@ -176,12 +176,7 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line {
-    val x = s.end.x - s.begin.x
-    val y = s.end.y - s.begin.y
-    val angle = (atan(y / x) + PI) % PI
-    return Line(s.begin, angle)
-}
+fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
 
 /**
  * Средняя
@@ -191,7 +186,7 @@ fun lineBySegment(s: Segment): Line {
 fun lineByPoints(a: Point, b: Point): Line {
     val x = b.x - a.x
     val y = b.y - a.y
-    val angle = (atan(y / x) + PI) % PI
+    val angle = (atan2(y, x) + PI) % PI
     return Line(a, angle)
 }
 
@@ -216,14 +211,17 @@ fun bisectorByPoints(a: Point, b: Point): Line {
  */
 fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
     if (circles.size < 2) throw IllegalArgumentException()
-    var min = 100000.0
+    var min = Double.POSITIVE_INFINITY
     var firstCircle = circles[0]
     var secondCircle = circles[1]
     for (i in circles.indices)
-        for (j in i + 1 until circles.size) if (circles[j].distance(circles[i]) < min) {
-            min = circles[j].distance(circles[i])
-            firstCircle = circles[i]
-            secondCircle = circles[j]
+        for (j in i + 1 until circles.size) {
+            val distance = circles[j].distance(circles[i])
+            if (distance < min) {
+                min = distance
+                firstCircle = circles[i]
+                secondCircle = circles[j]
+            }
         }
     return Pair(firstCircle, secondCircle)
 }

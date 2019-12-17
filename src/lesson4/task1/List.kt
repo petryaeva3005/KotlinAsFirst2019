@@ -204,6 +204,10 @@ fun factorize(n: Int): List<Int> {
     val res = mutableListOf<Int>()
     var i = 2
     while (varN != 1) {
+        if (i > ceil(sqrt(varN.toDouble()))) {
+            res += varN
+            break
+        }
         while (varN % i != 0) i++
         res += i
         varN /= i
@@ -336,75 +340,77 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var varM = n
-    var varN = varM / 100000
+    var varM = 1000
+    var varN = n / 1000
     val result = StringBuilder()
-    fun hundred(n: Int): String = when (n) {
-        1 -> "сто "
-        2 -> "двести "
-        3 -> "триста "
-        4 -> "четыреста "
-        5 -> "пятьсот "
-        6 -> "шестьсот "
-        7 -> "семьсот "
-        8 -> "восемьсот "
-        9 -> "девятьсот "
-        else -> ""
-    }
-
-    fun decade(n: Int): String = when (n / 10) {
-        1 -> when (n) {
-            10 -> "десять "
-            11 -> "одиннадцать "
-            12 -> "двенадцать "
-            13 -> "тринадцать "
-            14 -> "четырнадцать "
-            15 -> "пятнадцать "
-            16 -> "шестнадцать "
-            17 -> "семнадцать "
-            18 -> "восемнадцать "
-            else -> "девятнадцать "
-        }
-        2 -> "двадцать "
-        3 -> "тридцать "
-        4 -> "сорок "
-        5 -> "пятьдесят "
-        6 -> "шестьдесят "
-        7 -> "семьдесят "
-        8 -> "восемьдесят "
-        9 -> "девяносто "
-        else -> ""
-    }
-
-    fun one(n: Int): String = when (n) {
-        1 -> {
-            if (varM != n % 10) "одна "
-            else "один "
-        }
-        2 -> {
-            if (varM != n % 10) "две "
-            else "два "
-        }
-        3 -> "три "
-        4 -> "четыре "
-        5 -> "пять "
-        6 -> "шесть "
-        7 -> "семь "
-        8 -> "восемь "
-        9 -> "девять "
-        else -> ""
+    fun threeDigit(m: Int): String {
+        val res = StringBuilder()
+        var nVar = m / 100
+        res.append(
+            when (nVar) {
+                1 -> "сто "
+                2 -> "двести "
+                3 -> "триста "
+                4 -> "четыреста "
+                5 -> "пятьсот "
+                6 -> "шестьсот "
+                7 -> "семьсот "
+                8 -> "восемьсот "
+                9 -> "девятьсот "
+                else -> ""
+            }
+        )
+        nVar = m % 100
+        res.append(
+            when (nVar / 10) {
+                1 -> when (nVar) {
+                    10 -> "десять "
+                    11 -> "одиннадцать "
+                    12 -> "двенадцать "
+                    13 -> "тринадцать "
+                    14 -> "четырнадцать "
+                    15 -> "пятнадцать "
+                    16 -> "шестнадцать "
+                    17 -> "семнадцать "
+                    18 -> "восемнадцать "
+                    else -> "девятнадцать "
+                }
+                2 -> "двадцать "
+                3 -> "тридцать "
+                4 -> "сорок "
+                5 -> "пятьдесят "
+                6 -> "шестьдесят "
+                7 -> "семьдесят "
+                8 -> "восемьдесят "
+                9 -> "девяносто "
+                else -> ""
+            }
+        )
+        if (nVar / 10 != 1) res.append(
+            when (m % 10) {
+                1 -> {
+                    if (varM == 1000) "одна "
+                    else "один "
+                }
+                2 -> {
+                    if (varM == 1000) "две "
+                    else "два "
+                }
+                3 -> "три "
+                4 -> "четыре "
+                5 -> "пять "
+                6 -> "шесть "
+                7 -> "семь "
+                8 -> "восемь "
+                9 -> "девять "
+                else -> ""
+            }
+        )
+        return res.toString()
     }
     if (n == 0) return "ноль"
-    else if (n / 1000 > 0) {
-        result.append(hundred(varN))
-        varM = n % 100000
-        varN = varM / 1000
-        result.append(decade(varN))
-        if (varN / 10 != 1) {
-            varM = n % 10000
-            varN = varM / 1000
-            result.append(
-                one(varN) + when (varN) {
+    if (varN != 0)
+    result.append(threeDigit(varN) + when (varN % 10) {
                     1 -> "тысяча "
                     2 -> "тысячи "
                     3 -> "тысячи "
@@ -412,17 +418,8 @@ fun russian(n: Int): String {
                     else -> "тысяч "
                 }
             )
-        } else result.append("тысяч ")
-    }
-    varM = n % 1000
-    varN = varM / 100
-    result.append(hundred(varN))
-    varN = n % 100
-    result.append(decade(varN))
-    if (varN / 10 != 1) {
-        varM = n % 10
-        varN = varM
-        result.append(one(varN))
-    }
+    varM = 1
+    varN = n % 1000
+    result.append(threeDigit(varN))
     return result.toString().trim()
 }
