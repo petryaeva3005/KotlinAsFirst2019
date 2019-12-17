@@ -202,10 +202,11 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = if (list.isEmpty()) l
 fun factorize(n: Int): List<Int> {
     var varN = n
     val res = mutableListOf<Int>()
+    var i = 2
     while (varN != 1) {
-        val minDivisor = minDivisor(varN)
-        res += minDivisor
-        varN /= minDivisor
+        while (varN % i != 0) i++
+        res += i
+        varN /= i
     }
     return res
 }

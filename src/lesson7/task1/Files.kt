@@ -160,10 +160,10 @@ fun alignFileByWidth(inputName: String, outputName: String) {
                 x = (max - element.length) / k
                 y = (max - element.length) % k
             }
-            for (i in list2.indices) {
-                it.write(list2[i])
+            for ((index, elem) in list2.withIndex()) {
+                it.write(elem)
                 s++
-                if (i != list2.size - 1) {
+                if (index != list2.size - 1) {
                     for (j in 0..x) it.write(" ")
                     if (s <= y) it.write(" ")
                 }
