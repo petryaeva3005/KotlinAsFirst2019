@@ -199,21 +199,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = if (list.isEmpty()) l
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> {
-    var varN = n
-    val res = mutableListOf<Int>()
-    var i = 2
-    while (varN != 1) {
-        if (i > ceil(sqrt(varN.toDouble()))) {
-            res += varN
-            break
-        }
-        while (varN % i != 0) i++
-        res += i
-        varN /= i
-    }
-    return res
-}
+fun factorize(n: Int): List<Int> = TODO()
 
 /**
  * Сложная
@@ -222,7 +208,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*")
+fun factorizeToString(n: Int): String = TODO()
 
 /**
  * Средняя
@@ -340,10 +326,9 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 fun russian(n: Int): String {
-    var varM = 1000
     var varN = n / 1000
     val result = StringBuilder()
-    fun threeDigit(m: Int): String {
+    fun threeDigit(m: Int, thousand: Boolean): String {
         val res = StringBuilder()
         var nVar = m / 100
         res.append(
@@ -389,11 +374,11 @@ fun russian(n: Int): String {
         if (nVar / 10 != 1) res.append(
             when (m % 10) {
                 1 -> {
-                    if (varM == 1000) "одна "
+                    if (thousand) "одна "
                     else "один "
                 }
                 2 -> {
-                    if (varM == 1000) "две "
+                    if (thousand) "две "
                     else "два "
                 }
                 3 -> "три "
@@ -410,16 +395,17 @@ fun russian(n: Int): String {
     }
     if (n == 0) return "ноль"
     if (varN != 0)
-    result.append(threeDigit(varN) + when (varN % 10) {
-                    1 -> "тысяча "
-                    2 -> "тысячи "
-                    3 -> "тысячи "
-                    4 -> "тысячи "
-                    else -> "тысяч "
-                }
-            )
-    varM = 1
+        result.append(
+            threeDigit(varN, thousand = true) + if (varN / 10 % 10 == 1) "тысяч "
+            else when (varN % 10) {
+                1 -> "тысяча "
+                2 -> "тысячи "
+                3 -> "тысячи "
+                4 -> "тысячи "
+                else -> "тысяч "
+            }
+        )
     varN = n % 1000
-    result.append(threeDigit(varN))
+    result.append(threeDigit(varN, thousand = false))
     return result.toString().trim()
 }

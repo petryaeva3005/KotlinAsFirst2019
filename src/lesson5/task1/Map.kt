@@ -285,16 +285,7 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val res = friends.toMutableMap()
-    for ((key, value) in friends) {
-        for (element in value) {
-            res[key] = friends.getOrDefault(element, setOf()).filter { it != key }.toSet() + value
-            res[element] = res.getOrDefault(element, setOf())
-        }
-    }
-    return res
-}
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
 
 /**
  * Сложная
@@ -316,8 +307,8 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val map = mutableMapOf<Int, Int>()
     for ((index, value) in list.withIndex()) {
-        val value2 = map[number - value]
-        if (value2 != null) return Pair(value2, index)
+        val previous = map[number - value]
+        if (previous != null) return Pair(previous, index)
         else map[value] = index
     }
     return Pair(-1, -1)
